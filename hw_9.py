@@ -2,6 +2,10 @@ import os
 import sys
 import re
 
+
+# Constants
+FULL_LEN_NUMBER = 12
+SHORT_LEN_NUMBER = 10
 class ContactExist(Exception):
     pass
 
@@ -30,12 +34,12 @@ def input_error(func):
             return rise_eroor()
     return inner
 
-def format_phone_number(func):
+def format_phone_number(func,full_len_number = FULL_LEN_NUMBER, short_len_number = SHORT_LEN_NUMBER):
     def inner(*args, **kwargs):
         result = func(*args, **kwargs)
-        if len(result) == 12:
+        if len(result) == FULL_LEN_NUMBER:
             result = f'+{result}'
-        elif len(result) == 10:
+        elif len(result) == SHORT_LEN_NUMBER:
             result = f'+38{result}'
         else:
             raise UncorrectPhoneNumber
@@ -97,7 +101,7 @@ def comand_Phone(name_str, *args, **kwargs):
 def comandShowAll(*args, **kwargs):
     result = ''
     for key in concacts_dict:
-        result = '{}{:<10} -> {}\n'.format(result, key, concacts_dict[key])
+        result += '{:<10} -> {}\n'.format(key, concacts_dict[key])
     return result
 
 concacts_dict = {}
@@ -116,7 +120,7 @@ comand_dict = {
 def get_handler(operator):
     return comand_dict.get(operator, rise_eroor)
 
-if __name__ == "__main__":
+def main():
     while True:
         inp = input("Write command: ")
         s1 = None
@@ -132,5 +136,8 @@ if __name__ == "__main__":
         else:
             command = inp.lower()
         handler = get_handler(command)
-        h = handler(s1,s2)
+        h = handler(s1, s2)
         print(h)
+
+if __name__ == "__main__":
+    main()
